@@ -15,6 +15,17 @@ const tours = JSON.parse(
 //}) ; // middleware runs sequentially from top to bottom.
 // 1st runs app.use(express.json()) , then this middleware , then the route handlers(end of response cycle)
 
+exports.checkID = ( req, res , next , val) => 
+{
+   const id = parseInt(req.params.id, 10);
+    const tour = tours.find((el) => el.id === id);
+    if (!tour) {
+        return res.status(404).json({ status: 'fail', message: 'Tour not found here ' });
+    }
+    next() ;
+}
+
+
 // get all tour 
 
 exports.getAllTours =  (req, res) => {
@@ -41,7 +52,18 @@ exports.getAllTours =  (req, res) => {
     res.status(200).json({ status: 'success', data: { tour } });
 
     };
+    
+// adding middleware for checking validity for post handlers 
 
+exports.checkBody = (req, res  , next ) => {
+    if (!req.body.name || !req.body.price ) {
+        return res.status(400).json({ status: 'fail', 
+            message: 'Missing name or price' });
+    }
+
+    
+    next() ; // proceed to next route handler (createTour)
+}
 
 // post api 
 
@@ -93,7 +115,37 @@ exports.getAllTours =  (req, res) => {
                 return res.status(500).json({ status: 'error', message: 'Failed to delete tour' });
             }
 
-            res.status(204).send();
+            res.status(204).json({ status: 'success', 
+                massage : 'Tour deleted successfully' 
+             });
         }
     );
 };
+
+// patch api 
+exports.updateTour =(req , res ) => {
+    const id = parseInt(req.params.id, 10);
+
+    const tour = tours.find((el) => el.id === id);  // contains the tour object to be updated 
+
+    if (!tour) {
+        return res.status(404).json({ status: 'fail', message: 'Tour not found' });
+    }  
+    
+    Object.assign(tour , req.body) ; // updates the tour object with new data from req.body
+
+
+   fs.writeFile(`${__dirname}/../dev-data/data/sample-tour.json` ,
+   JSON.stringify(tours , null , 2) ,
+   (err) => {
+    if (err) {
+        return res.status(500).json({ status: 'error', message: 'Failed to update tour' });
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data : tour // return the updated tour object
+    } ) ;
+   } ) ;    
+
+}

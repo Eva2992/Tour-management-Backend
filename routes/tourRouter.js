@@ -1,15 +1,21 @@
 const express = require('express');
 
-const router = express.Router();
+const router = express.Router(); // 1st run express router
 
 const tourController = require('./../controller/tourContoller') ; // exported from tourContoller.js)
 
-router.route('/')
+router.param('id' , tourController.checkID) ; // middleware (run before the route handler
+//  and after route.express.Router())
+//  , runs for any route with :id parameter
+
+router.route('/') // route handler for /tours
 .get(tourController.getAllTours)
-.post(tourController.createTour);
+.post( tourController.checkBody ,tourController.createTour) ; 
+
 
 router.route('/:id')
 .get(tourController.getOneTour)
-.delete(tourController.deleteTour);
+.delete(tourController.deleteTour)
+.patch(tourController.updateTour) ;
 
 module.exports = router;
