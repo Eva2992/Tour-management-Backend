@@ -1,7 +1,9 @@
 const dotenv = require('dotenv'); // before run "npm install dotenv" in terminal 
 
+const mongoose = require('mongoose') ;
+
 dotenv.config({ path: './config.env' }); 
-const mongoose = require('mongoose') ; // before run "npm install mongoose" in terminal
+
 const app = require('./app');
 
 const port = 3000;
@@ -15,8 +17,8 @@ mongoose.connect(DB).then(con => {
     console.log('DB connection successful') ;
 }) ;
 
-console.log(process.env.NODE_ENV) ;
 
+    
 
 app.listen(port, () => {
     console.log(`server running at port http://localhost:${port}`);

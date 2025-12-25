@@ -1,19 +1,124 @@
 
 const fs = require('fs');
+const Tour = require('./../Model/tourModel') ;
 
-const tours = JSON.parse(
+
+exports.createTour = async (req , res) => {
+ try { 
+    const newTour = await Tour.create(req.body) ; // Tour.create() returns a promise 
+
+    res.status(201).json({
+        status : 'success' ,
+        data : {
+            tour : newTour 
+        }
+    })
+     }  catch (err)  {
+        res.status(400).json({
+            status : 'fail' ,
+            massage : 'Invalid Input'
+        })
+     }
+     
+ 
+} ;
+
+
+exports.getAllTours = async (req, res) => {
+   
+    try {
+    const allTour = await Tour.find() ;
+
+    res.status(200).json({
+        status :'success' ,
+        results : allTour.length ,
+        data : { allTour  } 
+
+    })  }  catch(err) {
+
+        res.status(404).json({
+            status : 'fail' ,
+            massage : 'Error  '
+        }) ;
+    } 
+
+} ;
+
+exports.getOneTour = async (req,res) => 
+{   
+    try {
+    const id = req.params.id ;
+    const tour = await Tour.findById(id) ; //mongoose method to find by id
+
+    res.status(200).json({
+        status : "success" ,
+        data : {
+            tour 
+        }
+    }) } catch (err) {
+        res.status(404).json({
+            status : 'fail' ,
+            massage : 'Tour not found'
+        }) ;
+    }   
+}  ;
+
+exports.updateTour = async (req, res) => {
+
+    try {
+        const tour =  await Tour.findByIdAndUpdate(req.params.id , req.body , {
+            new : true ,
+            runValidators : true 
+
+        })  ;
+
+      res.status(200).json({
+        status : "success" ,
+        data : {
+            tour 
+        }
+    })   ;
+    } catch (err) {
+        res.status(404).json({
+            status : 'fail' ,
+            massage : 'Tour not found'
+        }) ;
+
+    }
+};
+
+exports.deleteTour = async (req, res) => {
+    try {
+        await Tour.findByIdAndDelete(req.params.id) ;
+        res.status(200).json({
+        status : "success" ,
+        massage : "Tour deleted successfully" ,
+    
+    })   ;
+    } catch (err) {
+        res.status(404).json({
+            status : 'fail' ,
+            massage : 'Tour not found'
+        }) ;
+    }
+};
+    
+
+
+
+/* const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/../dev-data/data/sample-tour.json`, 'utf-8')
 );
-//__dirname means current directory ../Natours , 
-//Synchronously reads the file 
-//Returns the file content as a Buffer or raw
-//The "Sync" means it blocks/waits until the file is fully read then is converted to json 
+__dirname means current directory ../Natours , 
+Synchronously reads the file 
+Returns the file content as a Buffer or raw
+The "Sync" means it blocks/waits until the file is fully read then is converted to json 
 
-//app.use((req,res ,next) => {
-   // console.log('Hello from the middleware ');
-   // next() ;
-//}) ; // middleware runs sequentially from top to bottom.
-// 1st runs app.use(express.json()) , then this middleware , then the route handlers(end of response cycle)
+app.use((req,res ,next) => {
+   console.log('Hello from the middleware ');
+    next() ;
+}) ; // middleware runs sequentially from top to bottom.
+ 1st runs app.use(express.json()) , then this middleware , then the route handlers(end of response cycle) 
 
 exports.checkID = ( req, res , next , val) => 
 {
@@ -23,7 +128,7 @@ exports.checkID = ( req, res , next , val) =>
         return res.status(404).json({ status: 'fail', message: 'Tour not found here ' });
     }
     next() ;
-}
+} 
 
 
 // get all tour 
@@ -65,7 +170,7 @@ exports.checkBody = (req, res  , next ) => {
     next() ; // proceed to next route handler (createTour)
 }
 
-// post api 
+/* // post api 
 
     exports.createTour = (req, res) => 
         {
@@ -148,4 +253,4 @@ exports.updateTour =(req , res ) => {
     } ) ;
    } ) ;    
 
-}
+} */
