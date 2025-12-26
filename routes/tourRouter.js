@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router(); // 1st run express router
 
-const tourController = require('./../controller/tourContoller') ; // exported from tourContoller.js)
+const tourController = require('../Controller/tourContoller') ; // exported from tourContoller.js)
 
 //router.param('id' , tourController.checkID) ; // middleware (run before the route handler
 //  and after route.express.Router())
