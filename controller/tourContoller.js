@@ -2,7 +2,7 @@
 const fs = require('fs');
 const Tour = require('../Model/tourModel') ;
 const { listen } = require('../app');
-
+const APIFeatures = require('../helper/apiFeatures') ;
 
 exports.createTour = async (req , res) => {
  try { 
@@ -25,63 +25,19 @@ exports.createTour = async (req , res) => {
 } ;
 
 
+
+// get api to see all tours 
 exports.getAllTours = async (req, res) => {
    
     try {
-    //const allTour = await Tour.find() ; // see all tours 
     
-    // 1.filtering 
-    const queryObj = {...req.query};
-    const excludeField = ['page' , 'sort' , 'limit' , 'fields'] ;
-    excludeField.forEach(el => delete queryObj[el]);
-    
-    //2. advanced filtering
+    const features = new APIFeatures (Tour.find() , req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate() ; // returns updated/manipulated  query object
 
-    // queryObj = { difficulty: 'easy', duration: { gte: '5' } }  
-    // queryObj = { difficulty: 'easy', duration: { $gte: '5' } }  
-    // to convert gte to $gte for mongoose 
-     // // sample api test =  http://localhost:3000/api/v1/tours?duration[gte]=1&difficulty=easy&price[gte]=1500
-
-
-    let queryStr = JSON.stringify(queryObj) ;
-   
-    queryStr = queryStr.replace(/\b(gte|gt|lt|lte)\b/g , match => `$${match}` ) ;
-  //console.log(JSON.parse(queryStr)) ;
-
-    let query = Tour.find(JSON.parse(queryStr)) ; 
-   
-
-    // 3. Sorting 
-    // sample api test =http://localhost:3000/api/v1/tours?sort=price,ratingsAverage
-
-    if (req.query.sort) {
-        const sortBy = req.query.sort.split(',').join(' ') ; //for multiple sorting criteria like price , ratingsAverage
-        query = query.sort(sortBy) ; // mongoose sort query
-    } 
-
-
-   // 4. Field limiting
-    // sample api test = http://localhost:3000/api/v1/tours?fields=name,duration,price
-    
-     if(req.query.fields) { 
-        const fields = req.query.fields.split(',').join(' ') ;
-        query = query.select(fields) ;
-     }
-      
-     
-    // 5. Pagination
-    // sample api test = http://localhost:3000/api/v1/tours?page=2&limit=2
-    // page 1 = 1-2 , page 2 = 3-4 , page 3 = 5-6 (limit)
-
-    const page = req.query.page *1 || 1 ; // default page = 1
-    const limit =req.query.page *1 || 10 ;
-    const skip = (page-1) * limit ;
-
-    query= query.skip(skip).limit(limit) ;
-  
-    
-
-    const tours = await query ;
+    const tours = await features.query ; // finally executing the modified query lol 
     
 
     res.status(200).json({
@@ -93,25 +49,13 @@ exports.getAllTours = async (req, res) => {
 
         res.status(404).json({
             status : 'fail' ,
-            massage : 'Error  '
+            massage : err.message //specific error message
         }) ;
     } 
 
 } ;
 
-/*
-    api : GET /api/tours?page=2&sort=price&difficulty=easy
 
-    req.query = {
-  page: '2',
-  sort: 'price',
-  difficulty: 'easy'  }
-
-   => After removing excludeField , 
-   => queryObj = { difficulty: 'easy'  }
-   => page, sort, limit, and fields they defined how to display the results 
-        
-  */
 
 exports.getOneTour = async (req,res) => 
 {   
