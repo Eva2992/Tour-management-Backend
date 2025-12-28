@@ -3,9 +3,12 @@ const fs = require('fs');
 const Tour = require('../Model/tourModel') ;
 const { listen } = require('../app');
 const APIFeatures = require('../helper/apiFeatures') ;
+const catchAsync = require('./../helper/catchAsync') ;
 
-exports.createTour = async (req , res) => {
- try { 
+
+
+exports.createTour = catchAsync (async (req , res) => {
+
     const newTour = await Tour.create(req.body) ; // Tour.create() returns a promise 
 
     res.status(201).json({
@@ -14,22 +17,16 @@ exports.createTour = async (req , res) => {
             tour : newTour 
         }
     })
-     }  catch (err)  {
-        res.status(400).json({
-            status : 'fail' ,
-            massage : 'Invalid Input'
-        })
-     }
+    
      
- 
-} ;
+} ) ;
 
 
 
 // get api to see all tours 
-exports.getAllTours = async (req, res) => {
+exports.getAllTours = catchAsync(async (req, res) => {
    
-    try {
+    
     
     const features = new APIFeatures (Tour.find() , req.query)
     .filter()
@@ -45,21 +42,14 @@ exports.getAllTours = async (req, res) => {
         results : tours.length ,
         data : { tours  } 
 
-    })  }  catch(err) {
-
-        res.status(404).json({
-            status : 'fail' ,
-            massage : err.message //specific error message
-        }) ;
-    } 
-
-} ;
+    })  
+}) ;
 
 
 
-exports.getOneTour = async (req,res) => 
+exports.getOneTour = catchAsync (async (req,res) => 
 {   
-    try {
+   
     const id = req.params.id ;
     const tour = await Tour.findById(id) ; //mongoose method to find by id
 
@@ -68,17 +58,12 @@ exports.getOneTour = async (req,res) =>
         data : {
             tour 
         }
-    }) } catch (err) {
-        res.status(404).json({
-            status : 'fail' ,
-            massage : 'Tour not found'
-        }) ;
-    }   
-}  ;
+    }) 
+} )  ;
 
-exports.updateTour = async (req, res) => {
+exports.updateTour = catchAsync (async (req, res) => {
 
-    try {
+   
         const tour =  await Tour.findByIdAndUpdate(req.params.id , req.body , {
             new : true ,
             runValidators : true 
@@ -90,15 +75,9 @@ exports.updateTour = async (req, res) => {
         data : {
             tour 
         }
-    })   ;
-    } catch (err) {
-        res.status(404).json({
-            status : 'fail' ,
-            massage : 'Tour not found'
-        }) ;
-
-    }
-};
+    })   
+    
+});
 
 exports.deleteTour = async (req, res) => {
     try {
@@ -111,7 +90,7 @@ exports.deleteTour = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status : 'fail' ,
-            massage : 'Tour not found'
+            massage : 'Tour not found' // not a global error handler
         }) ;
     }
 };
