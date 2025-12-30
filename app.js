@@ -7,12 +7,19 @@ const tourRouter = require('./routes/tourRouter') ;
 const userRouter = require('./routes/userRouter') ;
 
 
-
 //const morgan = require('morgan') ;
 
 // app.use(morgan('dev')); // 3rd party middleware 
 
 app.use(express.json()) ; 
+
+
+app.use((req,res , next)=> {
+
+   console.log('JWT_EXPIRES_IN:', process.env.JWT_EXPIRES_IN);
+    next() ;
+});
+
 
 app.use(express.static(`${__dirname}/public`)) ;
 

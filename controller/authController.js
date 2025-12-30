@@ -2,7 +2,7 @@ const User = require('./../Model/userModel') ;
 const catchAsync = require ('./../helper/catchAsync') ;
 const jwt = require('jsonwebtoken') ;
 const AppError = require('./../helper/globalError') ;
-
+const util = require('util') ; // to access promisify 
 
 
 const signToken = id => { // parameter id 
@@ -48,7 +48,7 @@ exports.login =catchAsync ( async (req ,res , next) => {
    //find user 
    const user = await User.findOne({email}).select('+password') ; // password (select : false)
 
-   //password(unharshed) user.password(harshed)
+   //password(unharshed) , user.password(harshed)
    if(!user || !(await user.correctPassword(password , user.password)) )
    return  next (new AppError('Please enter correct  email and password' , 401)) ; 
    
@@ -66,6 +66,44 @@ exports.login =catchAsync ( async (req ,res , next) => {
    
 } ) ;
 
+
+exports.protectRoute = catchAsync ( async (req,res , next)=> {
+      
+    let token ;
+
+    //1. getting token and checking if it exists
+
+    if(req.headers.authorization &&  req.headers.authorization.startsWith('Bearer'))  {
+
+        // sample  authorization: 'Bearer ea9512df-7128-4454-b491-9b53e5119f1f'
+
+        token = req.headers.authorization.split(' ')[1] ;  } // getting 2nd part of authorization  
+        //console.log(token) ;
+
+    if(!token)
+    {
+        return next( new AppError('You are not logged in bro' , 401)) ;
+    }
+
+    //2. veryfing  the token
+    const decoded = await util.promisify(jwt.verify)(token , process.env.JWT_SECRET) ;
+    //console.log(decoded) ;
+
+    //3. checking user exits (like user deletes account before token expires) 
+    
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new AppError(
+        'The user of this  token not exists ,sorry.',
+        401
+      )
+    );
+  }
+
+    next() ;
+
+}) ;
 
 /*
 
