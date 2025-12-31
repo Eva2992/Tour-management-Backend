@@ -19,7 +19,8 @@ exports.signUp = catchAsync(async (req , res  ) =>{  // then mongoose validation
         name : req.body.name ,
         email : req.body.email ,
         password : req.body.password ,
-        passwordConfirm : req.body.passwordConfirm
+        passwordConfirm : req.body.passwordConfirm ,
+        role : req.body.role
 
     }) ;
 
@@ -66,6 +67,7 @@ exports.login =catchAsync ( async (req ,res , next) => {
    
 } ) ;
 
+// protectRoute Middleware 
 
 exports.protectRoute = catchAsync ( async (req,res , next)=> {
       
@@ -75,7 +77,7 @@ exports.protectRoute = catchAsync ( async (req,res , next)=> {
 
     if(req.headers.authorization &&  req.headers.authorization.startsWith('Bearer'))  {
 
-        // sample  authorization: 'Bearer ea9512df-7128-4454-b491-9b53e5119f1f'
+        // sample token : authorization: 'Bearer ea9512df71.284454b491.9b53e5119f1f'
 
         token = req.headers.authorization.split(' ')[1] ;  } // getting 2nd part of authorization  
         //console.log(token) ;
@@ -86,7 +88,7 @@ exports.protectRoute = catchAsync ( async (req,res , next)=> {
     }
 
     //2. veryfing  the token
-    const decoded = await util.promisify(jwt.verify)(token , process.env.JWT_SECRET) ;
+    const decoded = await util.promisify(jwt.verify)(token , process.env.JWT_SECRET) ; // promisify() converts a callback function into a Promise-based function 
     //console.log(decoded) ;
 
     //3. checking user exits (like user deletes account before token expires) 
@@ -100,10 +102,28 @@ exports.protectRoute = catchAsync ( async (req,res , next)=> {
       )
     );
   }
-
+   // so that restrict function can access to currentuser
+    req.user = currentUser ;
     next() ;
 
 }) ;
+
+// restrict function  
+exports.restrictTo =  (...roles) => { // roles(array) gettiing from router (roles = admin)
+                                      // (...roles)  allows multiple argument collected in roles a
+return (req , res , next ) => {
+    if(!roles.includes(req.user.role)) {
+        return next (
+            new AppError('Bro ! You do not have permission to delete ' , 403 ) 
+        );
+    } 
+
+    next(); // next middleware is the delete middleware
+};
+
+};
+
+
 
 /*
 

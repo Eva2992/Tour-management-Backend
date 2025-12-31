@@ -11,12 +11,16 @@ const auth = require('./../Controller/authController');
 
 router.route('/') // route handler for /tours
 .get(auth.protectRoute ,tourController.getAllTours)
-.post( tourController.createTour) ; 
+.post( auth.protectRoute,tourController.createTour) ; 
 
 
  router.route('/:id')
-.get(tourController.getOneTour)
-.delete(tourController.deleteTour)
-.patch(tourController.updateTour) ; 
+.get(auth.protectRoute ,tourController.getOneTour)
+.patch(auth.protectRoute ,tourController.updateTour) 
+.delete(
+    auth.protectRoute ,
+    auth.restrictTo('admin') ,
+    tourController.deleteTour);
+
 
 module.exports = router;

@@ -29,14 +29,22 @@ const userSchema = new mongoose.Schema  ( {
 
     photo :
     {
-        type : String
+        type : String  
+        
     },
+    
+    role : {
+        type : String ,
+        enum : ['user' , 'guide' , 'admin' ] ,
+        default : 'user'
+    } ,
+
 
     passwordConfirm : { // it is used only for checking the validation , not saved in the database
         type : String ,
         required : [true , 'Please Confirm your password'] ,
         validate: {
-        // Now they are bundled together
+        // they are bundled together
         validator: function(el) {
             return el === this.password;
         },
