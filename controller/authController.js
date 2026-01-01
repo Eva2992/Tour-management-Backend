@@ -13,6 +13,22 @@ const signToken = id => { // parameter id
         return token ;
 
 }
+
+const creatAndSendToken = (user , statusCode , res) =>{
+ 
+  const token = signToken(user._id) ;
+  res.status(statusCode).json({
+
+        status :'success',
+        token ,
+        data : { 
+            user : user
+         }
+
+});
+}
+
+
 exports.signUp = catchAsync(async (req , res  ) =>{  // then mongoose validation check (password and decryption)
     const newUser = await User.create({
 
@@ -47,7 +63,7 @@ exports.login =catchAsync ( async (req ,res , next) => {
    return  next (new AppError('Please enter email and password' , 400)) ;
    
    //find user 
-   const user = await User.findOne({email}).select('+password') ; // password (select : false)
+   const user = await User.findOne({email}).select('+password') ; //since  password (select : false)
 
    //password(unharshed) , user.password(harshed)
    if(!user || !(await user.correctPassword(password , user.password)) )
@@ -93,7 +109,7 @@ exports.protectRoute = catchAsync ( async (req,res , next)=> {
 
     //3. checking user exits (like user deletes account before token expires) 
     
-  const currentUser = await User.findById(decoded.id);
+  const currentUser = await User.findById(decoded.id); // decoded = token , token has payload which is the _id
   if (!currentUser) {
     return next(
       new AppError(
@@ -114,7 +130,7 @@ exports.restrictTo =  (...roles) => { // roles(array) gettiing from router (role
 return (req , res , next ) => {
     if(!roles.includes(req.user.role)) {
         return next (
-            new AppError('Bro ! You do not have permission to delete ' , 403 ) 
+            new AppError('Bro ! You do not have permission to for this Action ' , 403 ) 
         );
     } 
 
@@ -123,7 +139,33 @@ return (req , res , next ) => {
 
 };
 
+exports.updatePassword  = catchAsync (async (req, res,next) => {
+     
+    
+    //getting user (before changing password , you have to be logged in , )
+    //by this point authentication  is done ,so req.user is availbale from 'protectedRoute' middleware
 
+    const user = await  User.findById(req.user._id).select('+password') ; 
+    
+    //
+    if(!(await user.correctPassword(req.body.currentPassword , user.password))) 
+     {
+        return next (
+            new AppError('passwords dont match' , 401 )  
+        );
+     }
+
+     user.password = req.body.newPassword;
+     user.passwordConfirm= req.body.newPasswordConfirm;
+     await user.save() ; //password only encripted when save() is called 
+                           // and password and confirmedPassword are also checked in validate funtion
+    
+     // re log in 
+     creatAndSendToken(user , 201 , res);
+
+     next();
+
+}); 
 
 /*
 

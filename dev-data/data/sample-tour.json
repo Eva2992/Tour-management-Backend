@@ -213,6 +213,7 @@
                 "name": "Sonargaon Heritage Tour",
                 "ratings": 4.4,
                 "price": 2500,
+
                 "priceDiscount": 0,
                 "summary": "A day trip to the ancient capital and historic Panam City.",
                 "maxGroupSize": 50,
@@ -229,3 +230,6 @@
                     "2025-05-20T08:00:00.000Z",
                     "2025-06-10T08:00:00.000Z"
                 ]
+              }
+]
+        
