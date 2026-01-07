@@ -5,7 +5,7 @@ const app = express();
 
 const tourRouter = require('./routes/tourRouter') ;
 const userRouter = require('./routes/userRouter') ;
-
+const reviewRouter = require('./routes/reviewRouter') ;
 
 //const morgan = require('morgan') ;
 
@@ -22,9 +22,10 @@ app.use((req,res , next)=> {
 
 
 app.use(express.static(`${__dirname}/public`)) ;
-
+// mounting routes 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter) ;
 
 
 // handling unhandled routes

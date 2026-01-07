@@ -17,6 +17,20 @@ const signToken = id => { // parameter id
 const creatAndSendToken = (user , statusCode , res) =>{
  
   const token = signToken(user._id) ;
+
+  const cookieOptions = { // object
+    
+    expires : new Date( Date.now() + process.env.JWT_COOKIE_EXPIRES_IN *24*60*60*1000)  , // converting to ms
+     
+    httpOnly : true // in development , it uses HTTP 
+
+  } ;
+
+  if(process.env.NODE_ENV === 'production') cookieOptions.secure = true ; // in production , app uses HTTPS where secure : true works perfectly
+
+  res.cookie('jwt' , token , cookieOptions) ; // cookie => To store the token securely and 
+                                            // send it automatically with every request.
+
   res.status(statusCode).json({
 
         status :'success',
@@ -27,7 +41,8 @@ const creatAndSendToken = (user , statusCode , res) =>{
 
 });
 }
-
+  
+  
 
 exports.signUp = catchAsync(async (req , res  ) =>{  // then mongoose validation check (password and decryption)
     const newUser = await User.create({
@@ -40,19 +55,9 @@ exports.signUp = catchAsync(async (req , res  ) =>{  // then mongoose validation
 
     }) ;
 
-    const token = signToken(newUser._id) ;
+     creatAndSendToken(newUser , 201 , res) ; 
 
     
-
-
-    res.status(201).json({
-
-        status :'success',
-        token ,
-        data : { 
-            user : newUser
-         }
-    });
 } ) ;
 
 
@@ -69,17 +74,8 @@ exports.login =catchAsync ( async (req ,res , next) => {
    if(!user || !(await user.correctPassword(password , user.password)) )
    return  next (new AppError('Please enter correct  email and password' , 401)) ; 
    
-   const token = signToken(user._id) ;
 
-    res.status(201).json({
-
-        status :'success',
-        message : 'successful login' ,
-        token ,
-        data : { 
-            user : user
-         }
-    });
+   creatAndSendToken(user , 201 , res) ;
    
 } ) ;
 
@@ -134,7 +130,7 @@ return (req , res , next ) => {
         );
     } 
 
-    next(); // next middleware is the delete middleware
+    next(); // next middleware is the delete/get middleware
 };
 
 };
@@ -205,5 +201,14 @@ Compares with token’s signature
 
 ✔ Match → token trusted
 ❌ No match → token rejected
+
+****Cookies *****
+
+Tokens are  stored in localStorage and
+Must be manually attached to every request
+
+ cookie => To store the token securely and 
+ send it automatically with every request.
+
 
 */

@@ -51,7 +51,11 @@ exports.getOneTour = catchAsync (async (req,res) =>
 {   
    
     const id = req.params.id ;
-    const tour = await Tour.findById(id) ; //mongoose method to find by id
+    const tour = await Tour.findById(id).populate('reviews') ; // 'reviews'  is the field to be populated  (virtual populate) 
+    /*.populate( {
+       path :  'guides' ,
+       select : '-__v '
+    }) ;    */  // guides = {_id}   //popular will convert the id with real data (User data)
 
     res.status(200).json({
         status : "success" ,

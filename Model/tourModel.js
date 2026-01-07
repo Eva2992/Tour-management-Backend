@@ -1,5 +1,5 @@
 const mongoose = require('mongoose') ; // before run "npm install mongoose" in terminal
-
+const User = require('./userModel') ;
 const tourSchema = new mongoose.Schema ( { // schema definition
     name  : {
         type : String ,
@@ -72,10 +72,70 @@ const tourSchema = new mongoose.Schema ( { // schema definition
     select : false  // hide this field from output
    } ,
 
-    startDates : [ Date  ]  // array of dates
+    startDates : [ Date  ]  , // array of dates
 
+    startLocation : { // embedded onject 
+      type : {
+             type : String ,
+             default : ['Point'] ,
+             enum : ['Point']
+           } ,
+      coordinates : [Number]   ,
+      address : String ,
+      description : String  
+          
+    } ,
+
+  locations : [
+    {
+       type : {
+             type : String ,
+             default : ['Point'] ,
+             enum : ['Point']
+           } ,
+      coordinates : [Number]   ,
+      address : String ,
+      description : String  ,
+      day : Number
+    }
+  ] ,
+
+  guides :  [
+    {
+      type : mongoose.Schema.ObjectId,
+      ref: 'User'
+    }
+  ]
+} , 
+
+    {
+   toJSON : { virtuals : true } ,
+    toObject : { virtuals : true }
+    
 
 }) ; 
+
+
+//Query middleware runs before or after  query 
+tourSchema.pre(/^find/ , function() {
+
+  this.populate({
+    path : 'guides' ,
+    select : '-__v'///popular will convert the id with real data (User data)
+  }) ;
+
+ 
+}) ;
+
+
+//virtuale populate 
+
+tourSchema.virtual('reviews' , {
+  ref : 'Review' ,
+  foreignField : 'referenceTour' , // id of tour is saved in referenceTour
+  localField : '_id' // id of the tour 
+})
+
 
 const Tour = mongoose.model('Tour' , tourSchema) ; // model creation
 
