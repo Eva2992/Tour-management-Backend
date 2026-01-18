@@ -21,14 +21,14 @@ const reviewSchema =  new mongoose.Schema ( {
     } ,
     referenceTour  :  // parent reference 
         {
-            type : mongoose.Schema.Types.ObjectId ,
+            type : mongoose.Schema.ObjectId ,
             ref : 'Tour' ,
             required : [true , 'Reference a tour ']
         },
     
 
      referenceUser: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: [true, 'Reference a User']
     }
@@ -61,3 +61,4 @@ reviewSchema.pre(/^find/ , function() {
 const Review = mongoose.model ('Review' , reviewSchema) ;
 
 module.exports = Review ;
+
