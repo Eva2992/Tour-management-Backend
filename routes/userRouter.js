@@ -13,8 +13,9 @@ const authController = require('./../Controller/authController') ;
 router.post('/signup' , authController.signUp);
 router.post('/login' ,authController.login) ;
 router.patch('/updatePassword' , authController.protectRoute , authController.updatePassword) ;
-router.patch('/updateUSer' , authController.protectRoute , usersController.UpdateUser) ;
+router.patch('/updateUser' , authController.protectRoute , usersController.updateUser) ;
 router.delete('/deleteUser' , authController.protectRoute , usersController.deleteUser) ;
 router.get('/', authController.protectRoute ,authController.restrictTo('admin') , usersController.getAllUsers); // only admin can see all users 
+router.get('/:id', authController.protectRoute , authController.restrictTo('admin') , usersController.getOneUser);
 
 module.exports = router;

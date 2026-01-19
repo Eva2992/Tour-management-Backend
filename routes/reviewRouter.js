@@ -9,14 +9,17 @@ const router = express.Router( {mergeParams : true}) ;
 
 
 router.route('/')
-.get(auth.protectRoute,
-    reviewController.getAllReviews)         // you have be logged in 
-    .post(auth.protectRoute,
+.post(auth.protectRoute,
     auth.restrictTo('user'),
-    reviewController.createReview          // onlu user can give review 
-);
+    reviewController.setTourId,
+    reviewController.createReview )       // onlu user can give review );
+.get(auth.protectRoute , reviewController.getAllReview) ;
 
 
+router.route('/:id')
+.delete(auth.protectRoute , reviewController.deleteReview)   
+.patch(auth.protectRoute , reviewController.updateReview) 
+.get(auth.protectRoute , reviewController.getOneReview) ;
 
 module.exports = router ;
 

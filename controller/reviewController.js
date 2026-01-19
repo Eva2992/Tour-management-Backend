@@ -1,10 +1,24 @@
 
 const catchAsync = require('./../helper/catchAsync') ;
-
 const Review = require('./../Model/reviewModel') ;
+const  factory  = require('./handelFactory') ;
 
 
-exports.createReview  = catchAsync ( async  ( req, res) => {
+exports.setTourId = (req, res, next) => {
+   //  nested routes
+   if (!req.body.referenceTour) req.body.referenceTour = req.params.tourId ;
+   if (!req.body.referenceUser) req.body.referenceUser = req.user.id ; // from auth.protectRoute middleware
+   next() ;
+} ;
+
+exports.createReview  = factory.create(Review) ;
+exports.deleteReview = factory.delete(Review) ;
+exports.updateReview = factory.update(Review) ;
+exports.getOneReview = factory.getOne(Review) ;
+exports.getAllReview = factory.getAll(Review) ;
+
+
+ /*exports.createReview  = catchAsync ( async  ( req, res) => {
 
    if(!req.body.referenceTour) req.body.referenceTour = req.params.tourId ; // from nested route / url
    if(!req.body.referenceUser) req.body.referenceUser = req.user.id ; // from auth.protectRoute middleware
@@ -18,9 +32,8 @@ exports.createReview  = catchAsync ( async  ( req, res) => {
 
    });
 
-});
-
-
+});  
+// getting all reviews for a specific tour 
 exports.getAllReviews  = catchAsync ( async (req, res)=> {
 
 const filter = {} ;
@@ -44,8 +57,7 @@ res.status(200).json({
    });
 
 });
-
-
+*/
 
 
 

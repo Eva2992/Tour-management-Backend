@@ -2,12 +2,59 @@
 const fs = require('fs');
 const Tour = require('../Model/tourModel') ;
 const { listen } = require('../app');
-const APIFeatures = require('../helper/apiFeatures') ;
 const catchAsync = require('./../helper/catchAsync') ;
+const  factory  = require('./handelFactory') ;
 
 
 
-exports.createTour = catchAsync (async (req , res) => {
+
+
+
+
+exports.deleteTour = factory.delete(Tour) ; 
+exports.createTour = factory.create(Tour) ;
+exports.updateTour = factory.update(Tour) ;
+exports.getOneTour = factory.getOne(Tour, 'reviews') ; // populating 'reviews' field (virtual populate)
+exports.getAllTours = factory.getAll(Tour) ;
+
+
+/*exports.updateTour = catchAsync (async (req, res) => {
+
+   
+        const tour =  await Tour.findByIdAndUpdate(req.params.id , req.body , {
+            new : true ,
+            runValidators : true 
+
+        })  ;
+
+      res.status(200).json({
+        status : "success" ,
+        data : {
+            tour 
+        }
+    })   
+    
+});
+
+exports.getOneTour = catchAsync (async (req,res) => 
+{   
+   
+    const id = req.params.id ;
+    const tour = await Tour.findById(id).populate('reviews') ; // 'reviews'  is the field to be populated  (virtual populate) 
+    /*.populate( {
+       path :  'guides' ,
+       select : '-__v '
+    }) ;      // guides = {_id}   //popular will convert the id with real data (User data)
+
+    res.status(200).json({
+        status : "success" ,
+        data : {
+            tour 
+        }
+    }) 
+} )  ; 
+
+ exports.createTour = catchAsync (async (req , res) => {
 
     const newTour = await Tour.create(req.body) ; // Tour.create() returns a promise 
 
@@ -21,9 +68,6 @@ exports.createTour = catchAsync (async (req , res) => {
      
 } ) ;
 
-
-
-// get api to see all tours 
 exports.getAllTours = catchAsync(async (req, res) => {
    
     
@@ -46,43 +90,6 @@ exports.getAllTours = catchAsync(async (req, res) => {
 }) ;
 
 
-
-exports.getOneTour = catchAsync (async (req,res) => 
-{   
-   
-    const id = req.params.id ;
-    const tour = await Tour.findById(id).populate('reviews') ; // 'reviews'  is the field to be populated  (virtual populate) 
-    /*.populate( {
-       path :  'guides' ,
-       select : '-__v '
-    }) ;    */  // guides = {_id}   //popular will convert the id with real data (User data)
-
-    res.status(200).json({
-        status : "success" ,
-        data : {
-            tour 
-        }
-    }) 
-} )  ;
-
-exports.updateTour = catchAsync (async (req, res) => {
-
-   
-        const tour =  await Tour.findByIdAndUpdate(req.params.id , req.body , {
-            new : true ,
-            runValidators : true 
-
-        })  ;
-
-      res.status(200).json({
-        status : "success" ,
-        data : {
-            tour 
-        }
-    })   
-    
-});
-
 exports.deleteTour = async (req, res) => {
     try {
         await Tour.findByIdAndDelete(req.params.id) ;
@@ -97,7 +104,7 @@ exports.deleteTour = async (req, res) => {
             massage : 'Tour not found' // not a global error handler
         }) ;
     }
-};
+}; */
     
 
 
