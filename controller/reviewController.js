@@ -18,6 +18,10 @@ exports.getOneReview = factory.getOne(Review) ;
 exports.getAllReview = factory.getAll(Review) ;
 
 
+
+
+
+
  /*exports.createReview  = catchAsync ( async  ( req, res) => {
 
    if(!req.body.referenceTour) req.body.referenceTour = req.params.tourId ; // from nested route / url

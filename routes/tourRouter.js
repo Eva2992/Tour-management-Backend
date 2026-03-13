@@ -16,13 +16,17 @@ router.use('/:tourId/reviews' , reviewRouter) ; // if found /:tourId/reviews in 
                                                   // nested routes using express
 
 router.route('/') // route handler for /tours
-.get(auth.protectRoute ,tourController.getAllTours)
-.post( auth.protectRoute,tourController.createTour) ; 
+.get(tourController.getAllTours)
+.post( auth.protectRoute,
+    auth.restrictTo('admin' , 'guide') ,
+    tourController.createTour) ; 
 
 
- router.route('/:id')
+router.route('/:id')
 .get(auth.protectRoute ,tourController.getOneTour)
-.patch(auth.protectRoute ,tourController.updateTour) 
+.patch(auth.protectRoute ,
+    auth.restrictTo('admin' , 'guide') ,
+    tourController.updateTour)
 .delete(
     auth.protectRoute ,
     auth.restrictTo('admin') ,

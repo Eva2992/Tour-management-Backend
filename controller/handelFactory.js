@@ -71,7 +71,7 @@ exports.getOne = (Model , populateOptions) =>
 {     
    // console.log(req.params.id  , populateOptions) ;
     let query =  Model.findById(req.params.id) ;
-    if(populateOptions) query = query.populate(populateOptions) ; //for review Model , populate reviews field
+    if(populateOptions) query = query.populate(populateOptions) ; //for review Model only (not for tour , user) , populate reviews field
 
     const doc = await query ;
   // console.log(doc) ;
@@ -84,7 +84,7 @@ exports.getOne = (Model , populateOptions) =>
         data : {
             doc 
         }
-    }) 
+    }) ; 
 } )  ;
 
 
@@ -95,6 +95,10 @@ exports.getAll = Model =>
     if (req.params.tourId) filter.referenceTour = req.params.tourId ;  // only for review  , sample url : {{URL}}/api/v1/tours/696d3457e/reviews
      //console.log(filter) ;                                           // so filter = { referenceTour : '696d3457e' } which will get all reviews for this tour only , 
                                                                          // for other model(tour, user)  filter = {} , for getting all reviews of all tours  filter = {} bcz there will be no tourId in paramas 
+
+
+   
+
     const features = new APIFeatures (Model.find(filter) , req.query)
     .filter()
     .sort()

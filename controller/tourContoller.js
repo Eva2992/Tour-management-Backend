@@ -6,16 +6,14 @@ const catchAsync = require('./../helper/catchAsync') ;
 const  factory  = require('./handelFactory') ;
 
 
-
-
-
-
-
 exports.deleteTour = factory.delete(Tour) ; 
 exports.createTour = factory.create(Tour) ;
 exports.updateTour = factory.update(Tour) ;
 exports.getOneTour = factory.getOne(Tour, 'reviews') ; // populating 'reviews' field (virtual populate)
 exports.getAllTours = factory.getAll(Tour) ;
+
+
+
 
 
 /*exports.updateTour = catchAsync (async (req, res) => {

@@ -128,6 +128,8 @@ tourSchema.pre(/^find/ , function() {
 }) ;
 
 
+tourSchema.index({price :1 , ratingsAverage : -1}) ;
+
 //virtuale populate 
 
 tourSchema.virtual('reviews' , {

@@ -12,7 +12,12 @@ class APIFeatures {
     const excludeField = ['page' , 'sort' , 'limit' , 'fields'] ;
     excludeField.forEach(el => delete queryObj[el]);
     
-      
+     // ADD THIS — convert name to regex before querying
+  if (queryObj.name) {
+    queryObj.name = { $regex: queryObj.name, $options: 'i' };
+  } 
+
+
     //2. advanced filtering
 
     // queryObj = { difficulty: 'easy', duration: { gte: '5' } }  

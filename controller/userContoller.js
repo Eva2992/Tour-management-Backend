@@ -2,12 +2,15 @@ const User = require('./../Model/userModel') ;
 const factory = require('./handelFactory') ;
 
 
-
-
 exports.deleteUser = factory.delete(User) ;
 exports.updateUser = factory.update(User) ;
 exports.getOneUser = factory.getOne(User) ;
 exports.getAllUsers = factory.getAll(User);
+
+
+
+
+
 
 /*exports.UpdateUser = catchAsync( async (req,res,next) => {
 

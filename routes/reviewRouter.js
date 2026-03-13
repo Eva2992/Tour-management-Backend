@@ -11,14 +11,18 @@ const router = express.Router( {mergeParams : true}) ;
 router.route('/')
 .post(auth.protectRoute,
     auth.restrictTo('user'),
-    reviewController.setTourId,
+    reviewController.setTourId,         //using the mddleware to get tourId and userId in req.body
     reviewController.createReview )       // onlu user can give review );
-.get(auth.protectRoute , reviewController.getAllReview) ;
+.get( reviewController.getAllReview) ;
 
 
 router.route('/:id')
-.delete(auth.protectRoute , reviewController.deleteReview)   
-.patch(auth.protectRoute , reviewController.updateReview) 
+.delete(auth.protectRoute , 
+    auth.restrictTo('user' ,'admin'),
+    reviewController.deleteReview)   
+.patch(auth.protectRoute , 
+    auth.restrictTo('user' ,'admin'),
+    reviewController.updateReview) 
 .get(auth.protectRoute , reviewController.getOneReview) ;
 
 module.exports = router ;
