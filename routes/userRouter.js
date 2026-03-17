@@ -15,6 +15,7 @@ router.post('/login' ,authController.login) ;
 router.patch('/updatePassword' , authController.protectRoute , authController.updatePassword) ;
 router.patch('/updateUser' , authController.protectRoute , usersController.updateUser) ;
 router.delete('/deleteUser' , authController.protectRoute , usersController.deleteUser) ;
+router.get('/me', authController.protectRoute, usersController.getMe, usersController.getOneUser) ;
 router.get('/', authController.protectRoute ,authController.restrictTo('admin') , usersController.getAllUsers); // only admin can see all users 
 router.get('/:id', authController.protectRoute , authController.restrictTo('admin') , usersController.getOneUser);
 

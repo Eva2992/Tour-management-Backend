@@ -1,3 +1,5 @@
+const mongoose = require('mongoose') ;
+
 class APIFeatures {
     constructor (query , queryString) { // we will be modifying the 'query' through 
                                         // each filter before executing it at the end
@@ -16,6 +18,13 @@ class APIFeatures {
   if (queryObj.name) {
     queryObj.name = { $regex: queryObj.name, $options: 'i' };
   } 
+
+  // cast 24-char hex strings to ObjectId (e.g. ?referenceTour=abc123...)
+  Object.keys(queryObj).forEach(key => {
+    if (typeof queryObj[key] === 'string' && mongoose.Types.ObjectId.isValid(queryObj[key])) {
+      queryObj[key] = new mongoose.Types.ObjectId(queryObj[key]) ;
+    }
+  }) ;
 
 
     //2. advanced filtering

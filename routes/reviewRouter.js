@@ -23,7 +23,7 @@ router.route('/:id')
 .patch(auth.protectRoute , 
     auth.restrictTo('user' ,'admin'),
     reviewController.updateReview) 
-.get(auth.protectRoute , reviewController.getOneReview) ;
+.get(  reviewController.getOneReview) ;
 
 module.exports = router ;
 

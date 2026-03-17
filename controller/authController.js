@@ -64,7 +64,7 @@ exports.signUp = catchAsync(async (req , res  ) =>{  // then mongoose validation
 exports.login =catchAsync ( async (req ,res , next) => {
     const {email , password} =req.body ;
 
-    if(!email || !password) // checking if user put email and password 
+    if(!email || !password) 
    return  next (new AppError('Please enter email and password' , 400)) ;
    
    //find user 
@@ -92,6 +92,14 @@ exports.protectRoute = catchAsync ( async (req,res , next)=> {
         // sample token : authorization: 'Bearer ea9512df71.284454b491.9b53e5119f1f'
 
         token = req.headers.authorization.split(' ')[1] ;  } // getting 2nd part of authorization  
+    else if (req.headers.cookie) {
+        const jwtCookie = req.headers.cookie
+          .split(';')
+          .map(el => el.trim())
+          .find(el => el.startsWith('jwt='));
+
+        if (jwtCookie) token = jwtCookie.split('=')[1] ;
+    }
         //console.log(token) ;
 
     if(!token)

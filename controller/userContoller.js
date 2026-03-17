@@ -1,6 +1,11 @@
 const User = require('./../Model/userModel') ;
 const factory = require('./handelFactory') ;
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id ;
+  next() ;
+} ;
+
 
 exports.deleteUser = factory.delete(User) ;
 exports.updateUser = factory.update(User) ;

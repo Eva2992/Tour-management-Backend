@@ -23,7 +23,7 @@ router.route('/') // route handler for /tours
 
 
 router.route('/:id')
-.get(auth.protectRoute ,tourController.getOneTour)
+.get(tourController.getOneTour)
 .patch(auth.protectRoute ,
     auth.restrictTo('admin' , 'guide') ,
     tourController.updateTour)

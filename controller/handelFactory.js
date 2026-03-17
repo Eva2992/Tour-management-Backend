@@ -1,6 +1,7 @@
 const catchAsync = require('./../helper/catchAsync') ;
 const appError = require('./../helper/globalError') ;
 const APIFeatures = require('../helper/apiFeatures') ;
+const mongoose = require('mongoose') ;
 
 
 exports.delete = Model =>   // function parameter is  Model
