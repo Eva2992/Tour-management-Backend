@@ -55,7 +55,21 @@ const userSchema = new mongoose.Schema  ( {
         type : Boolean  ,
         default : true ,
         select : false
-    }
+    },
+
+    bookedTours  :   [
+            {
+                type : mongoose.Schema.ObjectId ,
+                ref : 'Tour'   
+            }] ,
+        
+    
+    savedTours: [{
+          type: mongoose.Schema.ObjectId,
+          ref: 'Tour',        
+        }]
+
+
 }); 
 
 //pre-save middleware

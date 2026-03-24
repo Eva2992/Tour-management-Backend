@@ -6,8 +6,8 @@ const authController = require('./../Controller/authController') ;
 
  const usersController = require('./../Controller/userContoller') ;
 
-// then use usersController.getAllUsers in the route handler
-//router.route('/').get(usersController.getAllUsers) ;
+const User = require('./../Model/userModel') ;
+
 
 
 router.post('/signup' , authController.signUp);
@@ -18,5 +18,8 @@ router.delete('/deleteUser' , authController.protectRoute , usersController.dele
 router.get('/me', authController.protectRoute, usersController.getMe, usersController.getOneUser) ;
 router.get('/', authController.protectRoute ,authController.restrictTo('admin') , usersController.getAllUsers); // only admin can see all users 
 router.get('/:id', authController.protectRoute , authController.restrictTo('admin') , usersController.getOneUser);
-
+router.patch('/add-tour' , authController.protectRoute , usersController.addtoList) ;
+router.patch('/remove-tour' , authController.protectRoute , usersController.removeFromList) ;
+router.patch('/updateUserbyAdmin/:id' , authController.protectRoute , authController.restrictTo('admin') , usersController.updateUser) ;
+router.delete('/deleteUserbyAdmin/:id' , authController.protectRoute , authController.restrictTo('admin') , usersController.deleteUser) ;
 module.exports = router;

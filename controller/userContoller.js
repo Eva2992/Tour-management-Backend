@@ -1,6 +1,6 @@
 const User = require('./../Model/userModel') ;
 const factory = require('./handelFactory') ;
-
+const bookedTour = require('./bookedTourController') ;
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id ;
   next() ;
@@ -12,6 +12,9 @@ exports.updateUser = factory.update(User) ;
 exports.getOneUser = factory.getOne(User) ;
 exports.getAllUsers = factory.getAll(User);
 
+
+exports.addtoList= bookedTour.addToList(User) ;
+exports.removeFromList = bookedTour.removeList(User) ;
 
 
 
