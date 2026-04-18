@@ -22,11 +22,15 @@ const creatAndSendToken = (user , statusCode , res) =>{
     
     expires : new Date( Date.now() + process.env.JWT_COOKIE_EXPIRES_IN *24*60*60*1000)  , // converting to ms
      
-    httpOnly : true // in development , it uses HTTP 
+        httpOnly : true, // in development , it uses HTTP
+        sameSite: 'lax'
 
   } ;
 
-  if(process.env.NODE_ENV === 'production') cookieOptions.secure = true ; // in production , app uses HTTPS where secure : true works perfectly
+    if(process.env.NODE_ENV === 'production') {
+        cookieOptions.secure = true ; // in production , app use HTTPS ,
+        cookieOptions.sameSite = 'none';
+    }
 
   res.cookie('jwt' , token , cookieOptions) ; // cookie => To store the token securely and 
                                             // send it automatically with every request.
