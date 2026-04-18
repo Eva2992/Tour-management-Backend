@@ -3,7 +3,7 @@ const AppError = require('./helper/globalError') ;
 const globalErrorHandler = require('./controller/errorController') ; 
 const cors = require('cors');    // npm install cors
 const app = express();
-const path = require('path') ;
+const path = require('path');
 
 const tourRouter = require('./routes/tourRouter') ;
 const userRouter = require('./routes/userRouter') ;
@@ -19,11 +19,7 @@ app.use(cors({
 // app.use(morgan('dev')); // 3rd party middleware 
 
 app.use(express.json()) ; 
-
-app.set('view engine' , 'pug');
-app.set('views' , `${__dirname}/views`) ; //
-
-app.use(express.static(path.join(__dirname, 'public'))) ; // serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use((req,res , next)=> {
@@ -33,28 +29,14 @@ app.use((req,res , next)=> {
 });
 
 app.get('/' ,  (req , res) =>{
-
-    res.status(200).render('base') //rendering pug template (base.pug
+    return res.status(200).json({
+        status: 'success',
+        message: 'Natours API is running',
+        environment: process.env.NODE_ENV || 'development'
+    });
 
 })
-
-
-app.use(express.static(`${__dirname}/public`)) ;
 // mounting routes 
-
-
-app.get('/overview' , (req, res) => {
-    res.status(200).render('overview' , {
-        title : 'All Tours'
-    }) ;
-} ) ;
-
-app.get('/tour' , (req, res) => {
-    res.status(200).render('tour' , {
-        title : 'Tour Details'
-    }) ;
-} ) ;
-
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);

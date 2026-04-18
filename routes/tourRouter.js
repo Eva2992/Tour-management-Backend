@@ -20,7 +20,7 @@ router.route('/') // route handler for /tours
 .post( auth.protectRoute,
     auth.restrictTo('admin' , 'guide') ,
     tourController.createTour) ; 
-
+  
 
 router.route('/:id')
 .get(tourController.getOneTour)
