@@ -2,8 +2,8 @@ const express = require('express');
 
 const router = express.Router(); // 1st run express router
 
-const tourController = require('../Controller/tourContoller') ; // exported from tourContoller.js)
-const auth = require('./../Controller/authController');
+const tourController = require('../controller/tourContoller') ; // exported from tourContoller.js)
+const auth = require('./../controller/authController');
 
 const reviewRouter = require('./reviewRouter') ;
 

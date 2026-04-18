@@ -1,6 +1,6 @@
 const express = require('express');
 const AppError = require('./helper/globalError') ;
-const globalErrorHandler = require('./Controller/errorController') ; 
+const globalErrorHandler = require('./controller/errorController') ; 
 const cors = require('cors');    // npm install cors
 const app = express();
 const path = require('path') ;

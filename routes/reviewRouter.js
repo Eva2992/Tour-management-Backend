@@ -1,6 +1,6 @@
 const express = require('express') ;
-const  reviewController = require('./../Controller/reviewController');
-const auth = require('./../Controller/authController');
+const  reviewController = require('./../controller/reviewController');
+const auth = require('./../controller/authController');
 
 const router = express.Router( {mergeParams : true}) ;
   // to get access to params from parent router (tourRouter.js) 
